@@ -2,16 +2,18 @@ import { View, Text, StyleSheet, TouchableWithoutFeedback, TouchableOpacity } fr
 import moment from 'moment-timezone'
 import 'moment/locale/pt-br'
 
-import commonStyles from '../commonStyles'
 import Icon from "react-native-vector-icons/FontAwesome"
 import { Swipeable } from 'react-native-gesture-handler'
 
 export default props => {
 
-    const date = props.doneAt ? props.doneAt : props.estimateAt
-    const formattedDate = moment(date).tz('America/Sao_Paulo').locale('pt-br').format('ddd, D [de] MMMM')
-
-    const doneOrNotStyle = props.doneAt != null ? { textDecorationLine: 'line-through' } : {}
+    const date = props.createDate ? props.createDate : null
+    var formattedDate = null
+    if(date != null){
+        formattedDate = moment(date).tz('America/Sao_Paulo').locale('pt-br').format('ddd, D [de] MMMM')
+    }
+    
+    const doneOrNotStyle = props.createDate != null ? { textDecorationLine: 'line-through' } : {}
 
     const getRightContent = () => {
         return (
@@ -28,11 +30,12 @@ export default props => {
             <View style={styles.container}>
                 <TouchableWithoutFeedback onPress={() => props.onToggleTask(props.id)}>
                     <View style={styles.checkContainer}>
-                        {getCheckView(props.doneAt)}
+                        {getCheckView(props.createDate)}
                     </View>
                 </TouchableWithoutFeedback>
                 <View>
-                    <Text style={[styles.desc, doneOrNotStyle]}>{props.desc}</Text>
+                    <Text style={[styles.desc, doneOrNotStyle]}>{props.title}</Text>
+                    <Text style={styles.desc}>{props.desc}</Text>
                     <Text style={styles.date}>{formattedDate}</Text>
                 </View>
             </View>
@@ -40,8 +43,8 @@ export default props => {
     )
 }
 
-function getCheckView(doneAt) {
-    if (doneAt != null) {
+function getCheckView(createDate) {
+    if (createDate != null) {
         return (
             <View style={styles.done}>
                 <Icon name='check' size={20} color='#fff' />
@@ -85,7 +88,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     desc: {
-        color: commonStyles.colors.mainText,
         fontSize: 15
     },
     date: {
